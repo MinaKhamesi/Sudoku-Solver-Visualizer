@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+
+*{
+    margin:0;
+    padding:0;
+    font-family: 'Poppins', sans-serif;
+}
+body{
+    height:100vh;
+    position:relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background:url('./soduku.jpg');
+    color:#693f26;
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    height:1rem;
+    padding: 1rem 2rem;
+    z-index:2;
+    margin-bottom: 2rem;
+    opacity:1;
+}
+nav .logo{
+    font-family: 'Pacifico', cursive;
+    font-size:3rem;
+    font-weight: normal;
+    text-transform:capitalize;
+    z-index:2;
+}
+nav > ul{
+    display: flex;
+    justify-content:space-around;
+    list-style: none;
+    flex-wrap: wrap;
+    padding-right:5rem;
+    z-index:2;
+}
+nav ul li{
+    margin: 0.5rem;
+    font-size:1rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.3rem;
+    transition:all 0.1s linear;
+}
+nav ul li:hover{
+   /*border-bottom:3px solid #693f26;*/
+   font-size: 1.02rem;
+   font-weight: 1000;
+}
+li > input[type='checkbox']{
+    visibility: hidden;
+}
+li > input[type='checkbox'] + label{
+    width: 100%;
+    height:100%;
+    cursor: pointer;
+}
+li > input[type='checkbox'] + label:hover{
+    border:none;
+}
+li > input[type='checkbox'] + label i{
+    font-size:1.5rem;
+    margin-left:0.5rem;
+    transition:all 0.3s;
+}
+li > input[type='checkbox'] ~ section{ 
+    display: none;
+}
+li > input[type='checkbox']:checked +label i{
+    transform:rotate(180deg);
+}
+li > input[type='checkbox']:checked ~ section{
+    display: block;
+    position:absolute;
+    background: #693f26;
+    color:#fff;
+    border-radius:5px;
+    padding:0.5rem;
+    z-index:400;
+    margin:0.3rem;
+}
+li > input[type='checkbox']:checked ~ section option{
+    width:10rem;
+    height:3rem;
+    line-height: 3;
+    border-bottom:1px dotted #d5c2a5c0;
+}
+li > input[type='checkbox']:checked ~ section option:hover{
+    border-left:5px solid #d5c2a5c0;
+    padding-left:0.6rem;
+}
+li > input[type='checkbox']:checked ~ section option:checked{
+    border-left:5px solid #d5c2a5c0;
+    padding-left:0.6rem;
+    border-bottom-style: solid;
+}
+
+/*.container{
+    position: absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    background:url('./soduku.jpg');
+    opacity:0.3;
+
+}*/
+.overlay{
+   position: absolute;
+   width:100%;
+   height:100%;
+   top:0;
+   left:0;
+   background:#d5c2a5c0;
+}
+
+.grid-container{
+    margin: 12% auto;
+    box-shadow:2px 2px 100px rgb(175, 174, 174), -4px -4px 50px #f4f4f4;
+    height:30rem;
+    width:30rem;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border:9px solid #693f26;
+    /*border-spacing: 2px;*/
+    opacity:0.8;
+    z-index:30;
+    position: relative;
+    bottom:2rem;
+}
+
+/*.grid-container .row{
+    border:1px solid #888;
+}*/
+.grid-container .row:nth-child(3),.grid-container .row:nth-child(6){
+    border-bottom:4px solid #693f26;
+}
+/*
+.grid-container .row:first-child{
+    border-top-width: 4px;
+}*/
+.grid-container .row td{
+    text-align: center;
+    font-weight: 1000; 
+    background:#ccc;
+}
+.grid-container .row td.correct{
+    background:rgb(57, 207, 57);
+}
+.grid-container .row td.wrong{
+    background:red;
+}
+.grid-container .row td.fixed{
+    background:#888;
+}
+
+/*.grid-container .row td:first-child{
+    border-left:4px solid #888; 
+    /*border-left-width: 4px;
+}*/
+.grid-container .row td:nth-child(3),.grid-container .row td:nth-child(6){
+    border-right:4px solid #693f26; 
+    /*border-right-width: 4px;*/
+}
+
+.row td input{
+    opacity: 0.9;
+    display: inline-block;
+    border:none;
+    border-radius:5px;
+    width: 2.7rem;
+    height: 2.8rem;
+    text-align: center;
+    font-size: 2.5rem;
+    color:#3b2415;
+}
+
+@media (max-width:760px){
+    :root{
+        font-size: 10px;
+    }
+    .row td input{
+        border-width: 2px; 
+    }
+    .grid-container{
+        margin-top: 49%;
+    }
+    
+      
+}
+/*@media (max-width:320px){
+    #algorithms:checked ~ section{
+        display: flex;
+        right:1rem;
+        padding: 0.05rem;
+    }
+}
+*/
+@media (max-width:280px){
+    .grid-container{
+        margin-top: 80%;
+        height:28rem;
+    width:28rem;
+    }
+}
