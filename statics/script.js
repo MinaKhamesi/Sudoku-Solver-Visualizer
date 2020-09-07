@@ -25,6 +25,21 @@ grid = grabGrid();
 algorithm = 'algorithm-x';
 speed = 'Fast';
 
+/**
+ *   clear grid
+ */
+
+const clearGrid = ()=>{
+    grid.forEach(row=>row.forEach(td=>{
+        td.className = ''
+        td.children[0].value=''
+    }))
+}
+
+const clearGridBtn = document.getElementById('clearBtn');
+
+clearGridBtn.addEventListener('click',clearGrid)
+
 
 
 
@@ -40,6 +55,14 @@ algorithms.forEach(option=>{
         algorithms.forEach(option=> option.selected=false)
         e.target.selected = true;
         console.log(algorithm)
+
+        grid.forEach(row=>row.forEach(td=>{
+            if(!td.classList.contains('fixed')){
+                td.children[0].value = '';
+            }
+        }))
+
+
     })
 })
 
@@ -112,11 +135,14 @@ visualizeBtns.forEach(btn=>{
     let speedInt;
     switch(speed){
         case 'Fast':
-            speedInt = 100;
+            speedInt = 3;
+            break;
         case 'Average':
-            speedInt = 250;
+            speedInt = 10;
+            break;
         case 'Slow':
-            speedInt = 500;
+            speedInt = 150;
+            break;
     }
 
     switch(algorithm){
@@ -143,32 +169,56 @@ visualizeBtns.forEach(btn=>{
 
 
 
-const backtracking = (grid,speedInt,row=0,col=0) =>{
+const backtracking = (grid,speedInt,row=0,col=0,counter=null, animationList=null) =>{
+   
+    if(!animationList) animationList=[]
+    
+    if(!counter) counter={'iteration':0,'startTime':Date.now()}
 
+    counter['iteration']++;
     
 
-    if(row===grid.length && col===grid[row].length) return true
+    if(counter['iteration']>=100000){
+        showAlert('Backtracking is a naive algorithm.Please try an easier puzzle for it.', 'danger');
+        return false;
+    }
+
+    if(row===grid.length && col===grid[row].length){
+        clearGrid()
+        animate(animationList,speedInt);
+        return true
+    } 
     
     let nextEmpty = findNextEmpty(grid,row,col);
 
-    if (!nextEmpty) return true;
+    if (!nextEmpty){
+        grid.forEach(row=>row.forEach(td=>{
+            if(!td.classList.contains('fixed')){
+                td.children[0].value = '';
+            }
+        }))
+        animate(animationList,speedInt);
+        let duration = Date.now() -  counter['startTime']
+        showAlert(`Algorithm solved the puzzle successfuly in ${duration} ms.`,'success');
+        return true;
+    } 
 
     let [nextRow,nextCol] = nextEmpty;
 
         
-    for(let possibeNum=1;possibeNum<=9;possibeNum++){
-
-            grid[nextRow][nextCol].children[0].value=possibeNum;
+    for(let possibleNum=1;possibleNum<=9;possibleNum++){
+            grid[nextRow][nextCol].children[0].value=possibleNum;
+            animationList.push([nextRow, nextCol,possibleNum,'wrong'])
 
             if(isCellValid(nextRow,nextCol)){
-
-               if(backtracking(grid,speedInt,nextRow,nextCol)) return true;
+                animationList.push([nextRow, nextCol,possibleNum,'correct'])
+               if(backtracking(grid,speedInt,nextRow,nextCol,counter,animationList)) return true;
 
             }
         }
 
     grid[nextRow][nextCol].children[0].value='';
-
+    animationList.push([nextRow, nextCol,'',''])
      return false;
 
     }
@@ -184,13 +234,87 @@ const backtracking = (grid,speedInt,row=0,col=0) =>{
 
 
     
-const bfs = (grid,speedInt) =>{
-    console.log('bfs function is gonna run' + '  '+ speed);
+const bfs = (grid,speedInt,row=0,col=0,counter=null, animationList=null) =>{
+    
+
+
+    if(!animationList) animationList=[]
+
+    if(!counter) counter={'iteration':0, 'startTime':Date.now()}
+
+    counter['iteration']++
+
+    if(counter['iteration']>=100000){
+        showAlert('Algorithm was taking too long. The process is terminated.','danger')
+        return false;
+    }
+
+    if(row===grid.length && col===grid[row].length){
+        clearGrid()
+        animate(animationList,speedInt);
+        let duration = Date.now() -  counter['startTime']
+        showAlert(`Algorithm solved the puzzle successfuly in ${duration} ms.`,'success');
+        return true
+    } 
+    
+    let nextBest = findNextBest(grid,row,col);
+
+    if (!nextBest){
+        grid.forEach(row=>row.forEach(td=>{
+            if(!td.classList.contains('fixed')){
+                td.children[0].value = '';
+            }
+        }))
+        animate(animationList,speedInt);
+        let duration = Date.now() -  counter['startTime']
+        showAlert(`Algorithm solved the puzzle successfuly in ${duration} ms.`,'success');
+        return true;
+    } 
+
+    let [nextRow,nextCol,nextChoices] = nextBest;
+
+        
+    for(let choice=0;choice<nextChoices.length;choice++){
+
+            let possibleNum = nextChoices[choice]
+
+            grid[nextRow][nextCol].children[0].value=possibleNum;
+            animationList.push([nextRow, nextCol,possibleNum,'wrong'])
+
+            if(isCellValid(nextRow,nextCol)){
+                animationList.push([nextRow, nextCol,possibleNum,'correct'])
+               if(bfs(grid,speedInt,nextRow,nextCol,counter,animationList)) return true;
+
+            }
+        }
+
+    grid[nextRow][nextCol].children[0].value='';
+    animationList.push([nextRow, nextCol,'',''])
+     return false;
+
 }
+
+
+
+
+
+
+
+
 
 const algorithmX = (grid,speedInt) =>{
     console.log('algorithmX function is gonna run' + '  '+ speed);
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -311,8 +435,80 @@ const findNextEmpty = (grid,row,col)=>{
             if(!grid[currentRow][currentCol].classList.contains('fixed') && !grid[currentRow][currentCol].children[0].value){
 
                 return [currentRow, currentCol]
+
             }
         }
     }
 }
 
+
+
+
+const findNextBest = (grid,row,col)=>{
+    let leastChoices = 100;
+    let result = null;
+
+
+    for(let currentRow=0;currentRow<grid.length;currentRow++){
+
+        for(let currentCol=0;currentCol<grid[row].length;currentCol++){
+
+            if(!grid[currentRow][currentCol].classList.contains('fixed') && !grid[currentRow][currentCol].children[0].value){
+
+                let currentCellChoices = calculateChoices(currentRow,currentCol,grid);
+
+                if(currentCellChoices.length<leastChoices){
+                    result = [currentRow, currentCol,currentCellChoices]
+                    leastChoices = currentCellChoices.length;
+                }
+
+
+            }
+        }
+    }
+
+    return result;
+
+}
+
+
+const calculateChoices = (row,col,grid)=>{
+    let choices = [];
+
+    for(let choice=1;choice<=9;choice++){
+        grid[row][col].children[0].value = choice;
+        if(isCellValid(row,col)){
+            choices.push(choice);
+        }
+    }
+
+    grid[row][col].children[0].value = '';
+
+    return choices;
+}
+
+
+
+
+
+const animate = (animationList, speedInt)=>{
+    for(let event=0;event<animationList.length;event++){
+        setTimeout(()=>{
+            let [row,col,value,className] = animationList[event];
+            grid[row][col].children[0].value= value;
+            grid[row][col].className = className;
+        },event*speedInt)
+    }
+}
+
+const showAlert = (msg,className)=>{
+    document.querySelector('.alert').classList.remove('hidden');
+    document.querySelector('.alert').classList.add(className);
+    document.querySelector('.alert').innerText=msg;
+
+    setTimeout(()=>{
+        document.querySelector('.alert').classList.add('hidden');
+        document.querySelector('.alert').classList.remove(className);
+        document.querySelector('.alert').innerText='';
+    },5000)
+}

@@ -120,7 +120,29 @@ li > input[type='checkbox']:checked ~ section option:checked{
    height:100%;
    top:0;
    left:0;
-   background:#d5c2a5c0;
+   background:#c9b89f98;
+}
+
+.alert{
+    width:50%;
+    padding:1rem;
+    z-index:100;
+    position: absolute;
+    top:5.5rem;
+    left:0.5rem;
+    border-radius:3px;
+    
+    color:#fff;
+    transition:0.3s all;
+}
+.alert.hidden{
+    left:-50rem;
+}
+.alert.danger{
+    background:#800000df;
+}
+.alert.success{
+    background:#158000df;
 }
 
 .grid-container{
@@ -194,7 +216,9 @@ li > input[type='checkbox']:checked ~ section option:checked{
     .grid-container{
         margin-top: 49%;
     }
-    
+    .alert{
+        width: 90%;
+    }
       
 }
 /*@media (max-width:320px){
@@ -211,4 +235,5 @@ li > input[type='checkbox']:checked ~ section option:checked{
         height:28rem;
     width:28rem;
     }
+
 }
