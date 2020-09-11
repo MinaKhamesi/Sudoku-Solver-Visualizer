@@ -65,10 +65,10 @@ clearGridBtn.addEventListener('click',clearGrid)
 
 const generatePuzzle = ()=>{
     clearGrid();
-    fillDiagonalSections();
-    backtracking(grid,0);
+    fillDiagonalSectionsRandomly();
+    backtracking(grid,0,true);
     deleteRandomely();
-    //fixClasses();
+    fixClasses();
    
 }
 
@@ -79,7 +79,7 @@ generateBtn.addEventListener('click',generatePuzzle);
 
 
 
-const fillDiagonalSections = () =>{
+const fillDiagonalSectionsRandomly = () =>{
 
     let row=0;
     let col = 0 ;
@@ -123,45 +123,36 @@ const fillDiagonalSections = () =>{
 }
 
 
-/*const fillNoneDiagonals = ()=>{
-    for(let row=0;row<grid.length;row++){
-        for(let col=0;col<grid[row].length;col++){
-            if(!grid[row][col].children[0].value){
-
-                let possibleNum = Math.floor(Math.random()*9) + 1;
-                grid[row][col].children[0].value = possibleNum;
-
-                let c = 0
-                while(!isCellValid(row,col,grid) && c<10){
-                    c++
-
-                    possibleNum = Math.floor(Math.random()*9) + 1;
-                    grid[row][col].children[0].value = possibleNum;
-
-                }
-                if(!isCellValid(row,col,grid)){
-                        let num = 1;
-                        
-                        grid[row][col].children[0].value = num;
-
-                        while(!isCellValid(row,col,grid) && num<9){
-                            num++;
-                            grid[row][col].children[0].value = num;
-                        }
-                    }
-
-                if(!isCellValid(row,col,grid)){
-                    grid[row][col].children[0].value = '';
-                }
-                }
-            }
-        }
-    }*/
-
 
 const deleteRandomely = ()=>{
-    
+    let cellsToRemoveFromPuzzle = []
+    for(let i =0;i<70;i++){
+        let randomCellIdx = Math.floor(Math.random()*81)
+        cellsToRemoveFromPuzzle.push(randomCellIdx)
 
+    }
+
+
+    let counter = 0
+    for(let row=0;row<grid.length;row++){
+        for(let col=0;col<grid[row].length;col++){
+            if(cellsToRemoveFromPuzzle.indexOf(counter)!==-1){
+                grid[row][col].children[0].value = '';
+            }
+            counter++
+        }
+    }
+
+}
+
+const fixClasses = ()=>{
+    grid.forEach(row=>row.forEach(td=>{
+        if(td.children[0].value){
+            td.className = 'fixed'
+        }else{
+            td.className = '';
+        }
+    }))
 }
 
 
@@ -323,7 +314,7 @@ visualizeBtn.addEventListener('click',()=>{
 
 
 
-const backtracking = (grid,speedInt,row=0,col=0,counter=null, animationList=null) =>{
+const backtracking = (grid,speedInt,comingFromGenerator=false,row=0,col=0,counter=null, animationList=null) =>{
    
     if(!animationList) animationList=[]
 
@@ -347,16 +338,21 @@ const backtracking = (grid,speedInt,row=0,col=0,counter=null, animationList=null
 
     if (!nextEmpty){
 
+        if(!comingFromGenerator){
+
         grid.forEach(row=>row.forEach(td=>{
             if(!td.classList.contains('fixed')){
                 td.children[0].value = '';
             }
         }))
 
-        animate(animationList,speedInt);
+        
+            animate(animationList,speedInt);
 
         let duration = Date.now() -  counter['startTime']
         showAlert(`Algorithm solved the puzzle successfuly in ${duration} ms.`,'success');
+        }
+        
 
         enableMenu(animationList.length);
 
@@ -372,7 +368,7 @@ const backtracking = (grid,speedInt,row=0,col=0,counter=null, animationList=null
 
             if(isCellValid(nextRow,nextCol,grid)){
                 animationList.push([nextRow, nextCol,possibleNum,'correct'])
-               if(backtracking(grid,speedInt,nextRow,nextCol,counter,animationList)) return true;
+               if(backtracking(grid,speedInt,comingFromGenerator , nextRow,nextCol,counter,animationList)) return true;
 
             }
         }
