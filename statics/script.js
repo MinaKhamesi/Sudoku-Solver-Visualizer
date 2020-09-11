@@ -5,6 +5,8 @@
 var grid;
 var algorithm;
 var speed;
+var speedInt;
+var inProgress = false;
 
 const grabGrid = ()=>{
     let grid = []
@@ -21,15 +23,30 @@ const grabGrid = ()=>{
 
 
 
+
+
 grid = grabGrid();
 algorithm = 'algorithm-x';
 speed = 'Fast';
+speedInt = 3;
+
+
+
+
+
+
+
+
 
 /**
  *   clear grid
  */
 
 const clearGrid = ()=>{
+    if(inProgress){
+        showAlert('Animation In Progress.','danger');
+        return;
+    }
     grid.forEach(row=>row.forEach(td=>{
         td.className = ''
         td.children[0].value=''
@@ -41,6 +58,111 @@ const clearGridBtn = document.getElementById('clearBtn');
 clearGridBtn.addEventListener('click',clearGrid)
 
 
+
+/**
+ * Generate puzzle
+ */
+
+const generatePuzzle = ()=>{
+    clearGrid();
+    fillDiagonalSections();
+    backtracking(grid,0);
+    deleteRandomely();
+    //fixClasses();
+   
+}
+
+
+
+const generateBtn = document.getElementById('generateBtn');
+generateBtn.addEventListener('click',generatePuzzle);
+
+
+
+const fillDiagonalSections = () =>{
+
+    let row=0;
+    let col = 0 ;
+    let counter=0;
+
+    while(row!=9 && col!=9 && counter<900){
+        counter++;
+        let possibleNum = Math.floor(Math.random()*9) + 1;
+
+        grid[row][col].children[0].value = possibleNum;
+        grid[row][col].classList.add('fixed');
+
+        if (row%3==0 && col%3 ==0){
+
+            col++;
+
+        }else if(isSquareValid(row,col,grid)){
+            
+            if(col%3 != 2){
+
+                col ++;
+
+            }else if(col%3===2){
+
+                if(row%3===2){
+                    col++;
+                }else{
+                    col = col-2;
+                }
+
+                row++;
+                
+            }
+
+
+        }
+
+    }
+    
+    
+}
+
+
+/*const fillNoneDiagonals = ()=>{
+    for(let row=0;row<grid.length;row++){
+        for(let col=0;col<grid[row].length;col++){
+            if(!grid[row][col].children[0].value){
+
+                let possibleNum = Math.floor(Math.random()*9) + 1;
+                grid[row][col].children[0].value = possibleNum;
+
+                let c = 0
+                while(!isCellValid(row,col,grid) && c<10){
+                    c++
+
+                    possibleNum = Math.floor(Math.random()*9) + 1;
+                    grid[row][col].children[0].value = possibleNum;
+
+                }
+                if(!isCellValid(row,col,grid)){
+                        let num = 1;
+                        
+                        grid[row][col].children[0].value = num;
+
+                        while(!isCellValid(row,col,grid) && num<9){
+                            num++;
+                            grid[row][col].children[0].value = num;
+                        }
+                    }
+
+                if(!isCellValid(row,col,grid)){
+                    grid[row][col].children[0].value = '';
+                }
+                }
+            }
+        }
+    }*/
+
+
+const deleteRandomely = ()=>{
+    
+
+}
 
 
 
@@ -59,6 +181,7 @@ algorithms.forEach(option=>{
         grid.forEach(row=>row.forEach(td=>{
             if(!td.classList.contains('fixed')){
                 td.children[0].value = '';
+                td.className='';
             }
         }))
 
@@ -120,19 +243,19 @@ algorithms.forEach(option=>{
 /**
  *    specify the speed and run the algo
  */
-const visualizeBtns = document.querySelectorAll(`#speed ~ section > option`)
+const speedBtns = document.querySelectorAll(`#speed ~ section > option`)
 
-visualizeBtns.forEach(btn=>{
+speedBtns.forEach(btn=>{
 
     btn.addEventListener('click',(e)=>{
 
     speed = e.target.value;
     
     // for UI
-    visualizeBtns.forEach(option=> option.selected=false)
+    speedBtns.forEach(option=> option.selected=false)
     e.target.selected = true;
 
-    let speedInt;
+    
     switch(speed){
         case 'Fast':
             speedInt = 3;
@@ -145,6 +268,38 @@ visualizeBtns.forEach(btn=>{
             break;
     }
 
+    
+
+
+})})
+
+
+const visualizeBtn = document.getElementById('visualizeBtn');
+
+visualizeBtn.addEventListener('click',()=>{
+    if(inProgress){
+        showAlert('Animation in progress','danger');
+        return;
+    };
+
+    //clear the grid of previous solutions.
+    grid.forEach(row=>row.forEach(td=>{
+        if(!td.classList.contains('fixed')){
+            td.children[0].value = '';
+            td.className='';
+        }
+    }))
+
+    //dropDowns go away && inprogress && disabling dropdowns
+    let menues = document.querySelectorAll(`ul input[type='checkbox']`);
+    menues.forEach(checkbox=>{
+        checkbox.checked=false;
+        checkbox.disabled = true;
+    })
+
+    inProgress = true;
+
+    
     switch(algorithm){
         case 'backtracking':
             return backtracking(grid,speedInt);
@@ -158,8 +313,7 @@ visualizeBtns.forEach(btn=>{
             return algorithmX(grid,speedInt);
     }
 
-
-})})
+})
 
 
 
@@ -172,7 +326,7 @@ visualizeBtns.forEach(btn=>{
 const backtracking = (grid,speedInt,row=0,col=0,counter=null, animationList=null) =>{
    
     if(!animationList) animationList=[]
-    
+
     if(!counter) counter={'iteration':0,'startTime':Date.now()}
 
     counter['iteration']++;
@@ -192,14 +346,20 @@ const backtracking = (grid,speedInt,row=0,col=0,counter=null, animationList=null
     let nextEmpty = findNextEmpty(grid,row,col);
 
     if (!nextEmpty){
+
         grid.forEach(row=>row.forEach(td=>{
             if(!td.classList.contains('fixed')){
                 td.children[0].value = '';
             }
         }))
+
         animate(animationList,speedInt);
+
         let duration = Date.now() -  counter['startTime']
         showAlert(`Algorithm solved the puzzle successfuly in ${duration} ms.`,'success');
+
+        enableMenu(animationList.length);
+
         return true;
     } 
 
@@ -210,7 +370,7 @@ const backtracking = (grid,speedInt,row=0,col=0,counter=null, animationList=null
             grid[nextRow][nextCol].children[0].value=possibleNum;
             animationList.push([nextRow, nextCol,possibleNum,'wrong'])
 
-            if(isCellValid(nextRow,nextCol)){
+            if(isCellValid(nextRow,nextCol,grid)){
                 animationList.push([nextRow, nextCol,possibleNum,'correct'])
                if(backtracking(grid,speedInt,nextRow,nextCol,counter,animationList)) return true;
 
@@ -266,8 +426,12 @@ const bfs = (grid,speedInt,row=0,col=0,counter=null, animationList=null) =>{
             }
         }))
         animate(animationList,speedInt);
+
         let duration = Date.now() -  counter['startTime']
         showAlert(`Algorithm solved the puzzle successfuly in ${duration} ms.`,'success');
+
+        enableMenu(animationList.length);
+
         return true;
     } 
 
@@ -276,16 +440,17 @@ const bfs = (grid,speedInt,row=0,col=0,counter=null, animationList=null) =>{
         
     for(let choice=0;choice<nextChoices.length;choice++){
 
-            let possibleNum = nextChoices[choice]
+            let possibleNum = nextChoices[choice];
 
             grid[nextRow][nextCol].children[0].value=possibleNum;
             animationList.push([nextRow, nextCol,possibleNum,'wrong'])
 
-            if(isCellValid(nextRow,nextCol)){
+            // here we are sure that choices are valid choices.
+
                 animationList.push([nextRow, nextCol,possibleNum,'correct'])
                if(bfs(grid,speedInt,nextRow,nextCol,counter,animationList)) return true;
 
-            }
+            
         }
 
     grid[nextRow][nextCol].children[0].value='';
@@ -304,6 +469,10 @@ const bfs = (grid,speedInt,row=0,col=0,counter=null, animationList=null) =>{
 
 const algorithmX = (grid,speedInt) =>{
     console.log('algorithmX function is gonna run' + '  '+ speed);
+
+
+
+
 }
 
 
@@ -387,7 +556,7 @@ const isColValid = (grid,colIdx)=>{
 
 
 
-const isSquareValid = (rowIdx,colIdx)=>{
+const isSquareValid = (rowIdx,colIdx,matrix)=>{
     
     let xSquare = Math.floor(colIdx/3);
     let ySquare = Math.floor(rowIdx/3);
@@ -399,7 +568,7 @@ const isSquareValid = (rowIdx,colIdx)=>{
 
         for(let col=xSquare*3;col<(xSquare+1)*3;col++){
 
-            let currentNum = grid[row][col].children[0].value;
+            let currentNum = matrix[row][col].children[0].value;
 
             if(currentNum && numsInSquare[currentNum]){
                 return false;
@@ -419,8 +588,8 @@ const isSquareValid = (rowIdx,colIdx)=>{
 
 
 
-const isCellValid = (row,col)=>{
-    return isRowValid(grid,row) && isColValid(grid,col) && isSquareValid(row,col)
+const isCellValid = (row,col,matrix)=>{
+    return isRowValid(grid,row) && isColValid(grid,col) && isSquareValid(row,col,matrix)
 }
 
 
@@ -477,7 +646,7 @@ const calculateChoices = (row,col,grid)=>{
 
     for(let choice=1;choice<=9;choice++){
         grid[row][col].children[0].value = choice;
-        if(isCellValid(row,col)){
+        if(isCellValid(row,col,grid)){
             choices.push(choice);
         }
     }
@@ -500,6 +669,19 @@ const animate = (animationList, speedInt)=>{
         },event*speedInt)
     }
 }
+
+const enableMenu = (events)=>{
+    setTimeout(()=>{
+        inProgress = false;
+
+        document.querySelectorAll(`ul input[type='checkbox']`).forEach(checkbox=>{
+            checkbox.disabled = false;
+        })
+
+    },events*speedInt);
+}
+
+
 
 const showAlert = (msg,className)=>{
     document.querySelector('.alert').classList.remove('hidden');

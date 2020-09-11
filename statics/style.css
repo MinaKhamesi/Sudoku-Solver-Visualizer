@@ -15,6 +15,7 @@ body{
     justify-content: space-between;
     background:url('./soduku.jpg');
     color:#693f26;
+    overflow: hidden;
 }
 
 nav{
@@ -68,7 +69,7 @@ li > input[type='checkbox'] + label:hover{
     border:none;
 }
 li > input[type='checkbox'] + label i{
-    font-size:1.5rem;
+    font-size:1.1rem;
     margin-left:0.5rem;
     transition:all 0.3s;
 }
@@ -103,6 +104,10 @@ li > input[type='checkbox']:checked ~ section option:checked{
     padding-left:0.6rem;
     border-bottom-style: solid;
 }
+#visualizeBtn{
+    font-weight: 600;
+    margin-left: 1rem;
+}
 
 /*.container{
     position: absolute;
@@ -121,6 +126,7 @@ li > input[type='checkbox']:checked ~ section option:checked{
    top:0;
    left:0;
    background:#c9b89f98;
+   background:#ffe6d0ee;
 }
 
 .alert{
@@ -146,8 +152,8 @@ li > input[type='checkbox']:checked ~ section option:checked{
 }
 
 .grid-container{
-    margin: 12% auto;
-    box-shadow:2px 2px 100px rgb(175, 174, 174), -4px -4px 50px #f4f4f4;
+    margin: auto;
+    box-shadow:4px 4px 30px rgb(17, 17, 17), -4px -4px 30px #682f2f;
     height:30rem;
     width:30rem;
     border-collapse: collapse;
