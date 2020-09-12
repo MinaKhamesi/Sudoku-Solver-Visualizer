@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,400;1,200&display=swap');
 
 *{
     margin:0;
@@ -14,6 +14,9 @@ body{
     flex-direction: column;
     justify-content: space-between;
     background:url('./soduku.jpg');
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-size: cover;
     color:#693f26;
     overflow: hidden;
 }
@@ -25,13 +28,13 @@ nav{
     flex-wrap: wrap;
     height:1rem;
     padding: 1rem 2rem;
-    z-index:2;
+    z-index:32;
     margin-bottom: 2rem;
     opacity:1;
 }
 nav .logo{
     font-family: 'Pacifico', cursive;
-    font-size:3rem;
+    font-size:2.2rem;
     font-weight: normal;
     text-transform:capitalize;
     z-index:2;
@@ -42,11 +45,11 @@ nav > ul{
     list-style: none;
     flex-wrap: wrap;
     padding-right:5rem;
-    z-index:2;
+    z-index:500;
 }
 nav ul li{
     margin: 0.5rem;
-    font-size:1rem;
+    font-size:1.05rem;
     font-weight: 500;
     cursor: pointer;
     padding: 0.3rem;
@@ -83,6 +86,7 @@ li > input[type='checkbox']:checked ~ section{
     display: block;
     position:absolute;
     background: #693f26;
+    box-shadow:1px 1px 10px rgb(7, 7, 7), -1px -1px 10px #705a5a;
     color:#fff;
     border-radius:5px;
     padding:0.5rem;
@@ -106,27 +110,23 @@ li > input[type='checkbox']:checked ~ section option:checked{
 }
 #visualizeBtn{
     font-weight: 600;
-    margin-left: 1rem;
+    margin-left: 2rem;
+    font-size:1.3rem;
+}
+#visualizeBtn:hover{
+    font-weight: 1000;
+    font-size:1.33rem;
+    text-shadow: 1px 1px 2px #814242;
 }
 
-/*.container{
-    position: absolute;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    background:url('./soduku.jpg');
-    opacity:0.3;
 
-}*/
 .overlay{
    position: absolute;
    width:100%;
    height:100%;
    top:0;
    left:0;
-   background:#c9b89f98;
-   background:#ffe6d0ee;
+   background:rgba(245, 248, 219, 0.849);
 }
 
 .alert{
@@ -137,7 +137,6 @@ li > input[type='checkbox']:checked ~ section option:checked{
     top:5.5rem;
     left:0.5rem;
     border-radius:3px;
-    
     color:#fff;
     transition:0.3s all;
 }
@@ -159,23 +158,17 @@ li > input[type='checkbox']:checked ~ section option:checked{
     border-collapse: collapse;
     table-layout: fixed;
     border:9px solid #693f26;
-    /*border-spacing: 2px;*/
-    opacity:0.8;
+    opacity:0.77;
     z-index:30;
     position: relative;
     bottom:2rem;
 }
 
-/*.grid-container .row{
-    border:1px solid #888;
-}*/
+
 .grid-container .row:nth-child(3),.grid-container .row:nth-child(6){
     border-bottom:4px solid #693f26;
 }
-/*
-.grid-container .row:first-child{
-    border-top-width: 4px;
-}*/
+
 .grid-container .row td{
     text-align: center;
     font-weight: 1000; 
@@ -191,13 +184,8 @@ li > input[type='checkbox']:checked ~ section option:checked{
     background:#888;
 }
 
-/*.grid-container .row td:first-child{
-    border-left:4px solid #888; 
-    /*border-left-width: 4px;
-}*/
 .grid-container .row td:nth-child(3),.grid-container .row td:nth-child(6){
     border-right:4px solid #693f26; 
-    /*border-right-width: 4px;*/
 }
 
 .row td input{
@@ -208,8 +196,9 @@ li > input[type='checkbox']:checked ~ section option:checked{
     width: 2.7rem;
     height: 2.8rem;
     text-align: center;
-    font-size: 2.5rem;
+    font-size: 1.7rem;
     color:#3b2415;
+    font-family: 'Grandstander', cursive;
 }
 
 @media (max-width:760px){
@@ -227,14 +216,7 @@ li > input[type='checkbox']:checked ~ section option:checked{
     }
       
 }
-/*@media (max-width:320px){
-    #algorithms:checked ~ section{
-        display: flex;
-        right:1rem;
-        padding: 0.05rem;
-    }
-}
-*/
+
 @media (max-width:280px){
     .grid-container{
         margin-top: 80%;

@@ -64,9 +64,18 @@ clearGridBtn.addEventListener('click',clearGrid)
  */
 
 const generatePuzzle = ()=>{
+    if(inProgress){
+        showAlert('Animation In Progress.','danger');
+        return;
+    }
+
     clearGrid();
+
     fillDiagonalSectionsRandomly();
     backtracking(grid,0,true);
+
+
+    // we have a complete valid sudoku puzzle. now we randomly delete some cells
     deleteRandomely();
     fixClasses();
    
@@ -176,6 +185,8 @@ algorithms.forEach(option=>{
             }
         }))
 
+        document.getElementById('algorithms').checked = false;
+
 
     })
 })
@@ -198,6 +209,8 @@ algorithms.forEach(option=>{
      })
  })
 
+
+
 /**
  *     If a digit is entered validate it and  make it fixed
  */
@@ -218,7 +231,7 @@ algorithms.forEach(option=>{
              },500)
          }else{
              td.classList.add('fixed')
-             if(isRowValid(grid,rowIdx) && isColValid(grid, colIdx) && isSquareValid(grid,rowIdx,colIdx)) return;
+             if(isCellValid(rowIdx,colIdx,grid)) return;
              td.classList.remove('fixed');
              td.classList.add('wrong');
              setTimeout(()=>{
@@ -232,7 +245,7 @@ algorithms.forEach(option=>{
 
 
 /**
- *    specify the speed and run the algo
+ *    specify the speed
  */
 const speedBtns = document.querySelectorAll(`#speed ~ section > option`)
 
@@ -257,14 +270,21 @@ speedBtns.forEach(btn=>{
         case 'Slow':
             speedInt = 150;
             break;
+        case 'noAnimation':
+            speedInt = 0;
+            break;
     }
 
-    
+    document.getElementById('speed').checked=false;
 
 
 })})
 
 
+
+/**
+ *     VISUALIZE button
+ */
 const visualizeBtn = document.getElementById('visualizeBtn');
 
 visualizeBtn.addEventListener('click',()=>{
