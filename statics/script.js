@@ -6,6 +6,7 @@ var grid;
 var algorithm;
 var speed;
 var speedInt;
+var solution = null;
 var inProgress = false;
 
 const grabGrid = ()=>{
@@ -51,6 +52,7 @@ const clearGrid = ()=>{
         td.className = ''
         td.children[0].value=''
     }))
+    solution = null;
 }
 
 const clearGridBtn = document.getElementById('clearBtn');
@@ -73,7 +75,10 @@ const generatePuzzle = ()=>{
 
     fillDiagonalSectionsRandomly();
     backtracking(grid,0,true);
-
+    solution = grid.map(row=>row.map(td=>{
+        return td.children[0].value;
+    }))
+    console.log(solution);
 
     // we have a complete valid sudoku puzzle. now we randomly delete some cells
     deleteRandomely();
@@ -135,7 +140,7 @@ const fillDiagonalSectionsRandomly = () =>{
 
 const deleteRandomely = ()=>{
     let cellsToRemoveFromPuzzle = []
-    for(let i =0;i<70;i++){
+    for(let i =0;i<80;i++){
         let randomCellIdx = Math.floor(Math.random()*81)
         cellsToRemoveFromPuzzle.push(randomCellIdx)
 
@@ -213,12 +218,14 @@ algorithms.forEach(option=>{
 
 /**
  *     If a digit is entered validate it and  make it fixed
+ * 
+ *    If we have a puzzle and a solution validate the answers entered.
  */
 
  grid.forEach((row,rowIdx)=>row.forEach((td,colIdx)=>{
-     td.children[0].addEventListener('change',(e)=>{
+     td.children[0].addEventListener('input',(e)=>{
          if(e.target.value==''){
-             td.classList.remove('fixed');
+             td.className = '';
              return;
          }
          
@@ -230,6 +237,13 @@ algorithms.forEach(option=>{
                 td.classList.remove('wrong');
              },500)
          }else{
+             if(solution){
+                if(td.children[0].value==solution[rowIdx][colIdx]){
+                    td.classList.add('correct')
+                }else{
+                    td.classList.add('wrong')
+                }
+             }else{
              td.classList.add('fixed')
              if(isCellValid(rowIdx,colIdx,grid)) return;
              td.classList.remove('fixed');
@@ -239,6 +253,7 @@ algorithms.forEach(option=>{
                  e.target.value = ''
              },500)
          }
+        }
      })
  }))
 

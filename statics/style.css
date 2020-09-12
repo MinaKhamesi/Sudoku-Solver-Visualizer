@@ -199,6 +199,7 @@ li > input[type='checkbox']:checked ~ section option:checked{
     font-size: 1.7rem;
     color:#3b2415;
     font-family: 'Grandstander', cursive;
+    outline:none;
 }
 
 @media (max-width:760px){
