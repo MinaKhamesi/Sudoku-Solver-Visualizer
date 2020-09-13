@@ -6,7 +6,7 @@
   "scripts": {
     "build": " NODE_ENV='production'  webpack",
     "start": "webpack-dev-server --entry ./src/js/Main.js --output-filename ./dist/bundle.js",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d statics"
   },
   "author": "",
   "license": "ISC",

@@ -1,5 +1,5 @@
-require("@babel/register");
-import css from './style.css';
+/*require("@babel/register");
+import css from './style.css';*/
 
 /**
  *           Grabbing all the grid
