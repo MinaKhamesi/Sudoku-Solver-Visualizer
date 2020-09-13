@@ -384,7 +384,7 @@ const backtracking = (grid,speedInt,comingFromGenerator=false,row=0,col=0,counte
             animate(animationList,speedInt);
 
         let duration = Date.now() -  counter['startTime']
-        showAlert(`Algorithm solved the puzzle successfuly in ${duration} ms.`,'success');
+        showAlert(`Backtracking algorithm solved the puzzle successfuly in ${duration} ms.`,'success');
         }
         
 
@@ -435,7 +435,7 @@ const bfs = (grid,speedInt,row=0,col=0,counter=null, animationList=null) =>{
     counter['iteration']++
 
     if(counter['iteration']>=100000){
-        showAlert('Algorithm was taking too long. The process is terminated.','danger')
+        showAlert('Best First Search algorithm was taking too long. The process is terminated.','danger')
         return false;
     }
 
@@ -509,7 +509,7 @@ const algorithmX = (grid,speedInt) =>{
 
     let endTime = Date.now();
 
-    showAlert(`Algorithm solved the puzzle in ${endTime - startTime} ms.`,'success')
+    showAlert(`Algorithm X solved the puzzle in ${endTime - startTime} ms.`,'success')
     
     grid.forEach(row=>row.forEach(td=>{
         if(!td.classList.contains('fixed')){
@@ -1060,13 +1060,21 @@ const enableMenu = (events)=>{
 
 
 const showAlert = (msg,className)=>{
-    document.querySelector('.alert').classList.remove('hidden');
-    document.querySelector('.alert').classList.add(className);
-    document.querySelector('.alert').innerText=msg;
+    //create alert
 
+    const alert = document.createElement('div');
+    alert.classList.add('alert');
+    alert.classList.add(className);
+    alert.appendChild(document.createTextNode(msg));
+    
+    //append to body
+
+    document.querySelector('body').appendChild(alert);
+    
     setTimeout(()=>{
-        document.querySelector('.alert').classList.add('hidden');
-        document.querySelector('.alert').classList.remove(className);
-        document.querySelector('.alert').innerText='';
+        
+        document.querySelector('body').removeChild(alert);
+
+
     },5000)
 }
