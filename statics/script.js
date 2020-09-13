@@ -1,3 +1,5 @@
+import css from './style.css';
+
 /**
  *           Grabbing all the grid
  */
