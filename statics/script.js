@@ -1,3 +1,4 @@
+require("@babel/register");
 import css from './style.css';
 
 /**
