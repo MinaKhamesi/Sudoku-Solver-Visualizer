@@ -174,14 +174,18 @@ li > input[type='checkbox']:checked ~ section option:checked{
     font-weight: 1000; 
     background:#ccc;
 }
-.grid-container .row td.correct{
-    background:rgb(57, 207, 57);
+/*.grid-container .row td.correct{
+    background:green;
+   
+}*/
+.grid-container .row td.correct input{
+    background: green;
 }
-.grid-container .row td.wrong{
+.grid-container .row td.wrong input{
     background:red;
 }
-.grid-container .row td.fixed{
-    background:#888;
+.grid-container .row td.fixed input{
+    background:rgb(61, 57, 57);
 }
 
 .grid-container .row td:nth-child(3),.grid-container .row td:nth-child(6){
@@ -198,6 +202,8 @@ li > input[type='checkbox']:checked ~ section option:checked{
     text-align: center;
     font-size: 1.7rem;
     color:#3b2415;
+    color:#fff;
+    background:#53808a;
     font-family: 'Grandstander', cursive;
     outline:none;
 }

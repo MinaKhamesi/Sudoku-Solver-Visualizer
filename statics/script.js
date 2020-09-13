@@ -78,7 +78,6 @@ const generatePuzzle = ()=>{
     solution = grid.map(row=>row.map(td=>{
         return td.children[0].value;
     }))
-    console.log(solution);
 
     // we have a complete valid sudoku puzzle. now we randomly delete some cells
     deleteRandomely();
@@ -499,10 +498,354 @@ const bfs = (grid,speedInt,row=0,col=0,counter=null, animationList=null) =>{
 
 
 const algorithmX = (grid,speedInt) =>{
-    console.log('algorithmX function is gonna run' + '  '+ speed);
+    
+    let startTime = Date.now();
+    let [origin,topColumns,rowHeades] = buildDoublyLinkedList()
+    insertCurrentGridValuesToLinkedList(origin,topColumns,rowHeades);
+
+    let nodesToAnimate = [];
+
+    solveWithDancingLinks(0,origin,nodesToAnimate);
+
+    let endTime = Date.now();
+
+    showAlert(`Algorithm solved the puzzle in ${endTime - startTime} ms.`,'success')
+    
+    grid.forEach(row=>row.forEach(td=>{
+        if(!td.classList.contains('fixed')){
+            td.children[0].value = '';
+        }
+    }));
+
+    animate(nodesToAnimate,speedInt);
+
+}
+
+class LinkedListNode{
+    constructor(up,down,left,right,head,rowNumber){
+        this.up = up;
+        this.down = down;
+        this.left = left;
+        this.right = right;
+        this.head = head;
+        this.rowNumber = rowNumber;
+    }
+}
+
+
+class LinkedListHeaderNode{
+    constructor(up, down, left,right,size){
+        this.up = up;
+        this.down = down;
+        this.left = left;
+        this.right = right;
+        this.size = size;
+    }
+}
+
+
+const buildDoublyLinkedList = ()=>{
+    let totalRows = 729; //81 cell * 9 possible number
+    let totalCols = 324; //81 cell * 4 constraints for each
+
+    let origin = new LinkedListHeaderNode(null, null, null, null,-1);
+
+    let topColumns = []
+    let rowHeades = []
+
+    //set up all 324 cols first
+
+    let prev = origin;
+
+    for(let col=0;col<totalCols;col++){
+
+        let colNode = new LinkedListHeaderNode(null, null,prev,null,0);
+
+        prev.right = colNode;
+
+        topColumns.push(colNode);
+        
+        prev = colNode;
+        
+    }
+
+    origin.left = topColumns[topColumns.length-1]
+    topColumns[topColumns.length-1].right = origin;
+
+
+    //set up all 729 rows of matrix. 4 node for each row:#1one number in a cell met  #2 rowConstrain met #3 column constraint met #4 square constrain met
+
+    for(let matrixRow=0;matrixRow<totalRows;matrixRow++){
+
+        let puzzleRow = Math.floor(matrixRow/81);
+         //each cell has 9 matrixRow and each row in puzzle has 9 cell aka each row in puzzle has 81 matrixRow
+
+        let puzzleCol = Math.floor((matrixRow%81)/9) 
+        //we have 81 matrixRow for a puzzleRow, after spotting where we are, considering 9 numbers for each cell and now we have our column.
+
+        let numberAssociatedToThisMatrixRow = (matrixRow%9) + 1;
+        //each cell has 9 number aka 9 matrixRow
+
+        
 
 
 
+
+        //finding the correct columns for our 4 constraints in this matrixRow
+
+        //we have 81*4 columns, first 81 for uniq digit in a cell, second 81 for uniq digits in a row, third for uniq digit in a column and last 81 for uniq digit in a square
+
+        //first constrain === we have one at the position of the cell for any number
+        //e.g we have 1 at first col for g[0][0] = 1 and g[0][0] = 2 ,... and g[0][0]=9
+        // So we only have to find the position of current cell in first 81 columns.
+
+        let node1Index = puzzleRow*9 + puzzleCol;
+
+        //second: after 81 cells, for each cell we have ones in 9 different positions for each number but cells in a row share these 9 positions for each number
+        //e.g matrix[0][0] has 1 in third col for number 3, matrix[0][1] and matrix[0][2] ,... and matrix[0][8] all have 1 in third col for number 3 .  So we only have to find the row*9 + num
+
+        let node2Index = 80 + puzzleRow*9 + numberAssociatedToThisMatrixRow;
+
+
+        //Third: after two 81 cells(162 cells), for each cell in a row with different number we have a one in third 81 cells, so for row 1 we have 1 in each 81 cells(9 cells in a row with 9 different numbers), after the first row is done. for second row we start from first column and fill the whole 81 cells again so that g[0][0] will have one in third column for number 3 and g[1][0] also will have one in third column for number 3. So we only have to find the position of the cell in puzzle column and the associatedNumber of this iteration. aka col*9+num
+
+
+        let node3Index = 161 + 9*puzzleCol + numberAssociatedToThisMatrixRow;
+
+
+        //Last: after 3*81 columns, we have another 81, in this section cells within the same box will share columns for same numbers e.g g[0][0],g[0][1],g[1][0],... and g[2][2] will all have 1 in the same column for same number. aka in matrix first 3 cells will share columns, next 3 will share same columns and so on. until row is done. then the next 3 will share columns with first 3 of first row because they are from the same box. So we have to find out which box the cell is belong to. and after that we have 1 in box*9 + num
+
+        let box = Math.floor(puzzleRow/3)*3 + Math.floor(puzzleCol/3);
+
+        let node4Index = 242 + 9*box + numberAssociatedToThisMatrixRow;
+
+
+
+
+        //now that we know the column idxs in which we want 1, we create a node in them.link them together with left and right properties. we cannot define up and downs yet. we have to go throw the column and do that with the help of topColumnNode for each column.
+
+        let node1 = new LinkedListNode(null,null,null,null,topColumns[node1Index],matrixRow);
+
+        let node2 = new LinkedListNode(null, null, node1,null,topColumns[node2Index],matrixRow);
+
+        let node3 = new LinkedListNode(null, null,node2,null,topColumns[node3Index],matrixRow);
+
+        let node4 = new LinkedListNode(null, null,node3,null,topColumns[node4Index],matrixRow);
+
+        node1.right = node2;
+        node2.right = node3;
+        node3.right = node4;
+
+        node4.right = node1;
+        node1.left = node4;
+
+        rowHeades.push(node1);
+
+        //assign up and down properties:
+
+        let topCol1 = topColumns[node1Index];
+        let topCol2 = topColumns[node2Index];
+        let topCol3 = topColumns[node3Index];
+        let topCol4 = topColumns[node4Index];
+
+        addNodeToBottomOfTheColumn(node1,topCol1);
+        addNodeToBottomOfTheColumn(node2,topCol2);
+        addNodeToBottomOfTheColumn(node3,topCol3);
+        addNodeToBottomOfTheColumn(node4,topCol4);
+
+
+    }
+
+
+    return [origin,topColumns,rowHeades];
+}
+
+
+
+const insertCurrentGridValuesToLinkedList = (origin,topColumns,rowHeades)=>{
+
+    grid.forEach((row,rowIdx)=>row.forEach((td,colIdx)=>{
+
+        let num = td.children[0].value;
+
+        if(num){
+
+            let matrixRow = (rowIdx*81) + (colIdx*9) + (num - 1);
+
+            //cover the whole row,Starting  from rowHead whenever sees a node cover the whole column
+
+
+            let rowHead = rowHeades[matrixRow];
+            
+            
+            coverColumn(rowHead.head); // first column
+
+            let current = rowHead.right;
+
+            while(current != rowHead){
+                
+                coverColumn(current.head);
+
+                current = current.right;
+            }
+
+
+        }
+    })
+    )
+
+}
+
+
+
+
+const solveWithDancingLinks = (level,origin,nodesToAnimate)=>{
+    if(origin==origin.right){
+        return true
+    }
+
+
+    //algo: #1pick a column with minimum value #2 pick a row that have values in that column#3select it as the answer.aka remove row and remove all rows that share columns with it.
+
+
+    //#1 pick a column with minimum size.aka possibilities
+    let selectedCol = origin.right;
+    let currentCol = selectedCol.right;
+
+    while(currentCol!=origin){
+        if(currentCol.size<selectedCol.size){
+            selectedCol = currentCol;
+        }
+
+        currentCol = currentCol.right;
+    }
+
+    coverColumn(selectedCol)
+
+    //#2 pick a row that have value in the col
+
+    let row = selectedCol.down;
+
+    while(row!=selectedCol){
+
+        //#3-1 add row to the solution aka add info of matrixRow to the puzzle
+        let puzzleRow = Math.floor(row.rowNumber/81);
+        let puzzleColumn = Math.floor((row.rowNumber%81) / 9);
+        let num = row.rowNumber % 9 + 1;
+        grid[puzzleRow][puzzleColumn].children[0].value = num;
+
+
+        nodesToAnimate.push([puzzleRow, puzzleColumn,num,'correct']);
+
+
+        //#3-2 remove row from the matrix or dllist.
+        let nextInRow = row.right;
+        while(nextInRow != row){
+            coverColumn(nextInRow.head)
+            nextInRow = nextInRow.right;
+        }
+
+        if(solveWithDancingLinks(level+1,origin,nodesToAnimate)) return true
+
+        //if we reached no answer now backtrack aka no value, row back in the list, and check other rows that have value in the column
+
+        grid[puzzleRow][puzzleColumn].children[0].value = '';
+
+        animationList.push([puzzleRow, puzzleColumn,'',''])
+
+        nextInRow = row.left;
+        while(nextInRow != row){
+            unCoverColumn(nextInRow.head)
+            nextInRow = nextInRow.left;
+        }
+
+        row = row.down;
+
+    }
+
+
+    unCoverColumn(selectedCol);
+
+}
+
+
+
+
+
+
+/**
+ * 
+ *    Helper functions for algorithmX with Dancing Links
+ */
+const addNodeToBottomOfTheColumn = (nodeToInsert,head)=>{
+    let current = head;
+    while(current.down != null && current.down!=head){
+        current = current.down;
+    }
+    current.down = nodeToInsert;
+    nodeToInsert.up = current;
+
+    //making it circular
+    head.up = nodeToInsert;
+    nodeToInsert.down = head;
+
+
+    head.size++;
+}
+
+
+
+const coverColumn = colHeadNode =>{
+
+    colHeadNode.right.left = colHeadNode.left;
+    colHeadNode.left.right = colHeadNode.right;
+
+    let row = colHeadNode.down;
+
+    while(row!=colHeadNode){
+
+        let nextInRow = row.right;
+
+        while(nextInRow != row){
+            nextInRow.up.down = nextInRow.down;
+            nextInRow.down.up = nextInRow.up;
+
+            nextInRow.head.size--;
+
+
+            nextInRow = nextInRow.right;
+        }
+
+        row = row.down;
+    }
+
+}
+
+
+
+const unCoverColumn = colHeadNode =>{
+
+    colHeadNode.right.left = colHeadNode;
+    colHeadNode.left.right = colHeadNode;
+
+    let row = colHeadNode.up;
+
+    while(row!=colHeadNode){
+
+        let nextInRow = row.left;
+
+        while(nextInRow != row){
+            nextInRow.up.down = nextInRow;
+            nextInRow.down.up = nextInRow;
+
+            nextInRow.head.size++;
+
+
+            nextInRow = nextInRow.left;
+        }
+
+        row = row.up;
+    }
 
 }
 
@@ -699,6 +1042,8 @@ const animate = (animationList, speedInt)=>{
             grid[row][col].className = className;
         },event*speedInt)
     }
+
+    enableMenu(animationList.length);
 }
 
 const enableMenu = (events)=>{
