@@ -94,6 +94,7 @@ li > input[type='checkbox']:checked +label i{
 }
 li > input[type='checkbox']:checked ~ ul{
     display: block;
+    list-style: none;
     position:absolute;
     background: #693f26;
     box-shadow:1px 1px 10px rgb(7, 7, 7), -1px -1px 10px #705a5a;
