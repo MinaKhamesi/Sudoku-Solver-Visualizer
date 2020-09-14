@@ -176,13 +176,15 @@ const fixClasses = ()=>{
 /**
  *       Specify the algo
  */
-const algorithms = document.querySelectorAll(`#algorithms ~ section option`);
+const algorithms = document.querySelectorAll(`#algorithms ~ ul li`);
 
 algorithms.forEach(option=>{
     option.addEventListener('click',(e)=>{
-        algorithm = e.target.value;
-        algorithms.forEach(option=> option.selected=false)
-        e.target.selected = true;
+
+        algorithm = e.target.getAttribute('data-value');
+
+        algorithms.forEach(option=> option.classList.remove('active'))
+        e.target.classList.add('active');
         console.log(algorithm)
 
         grid.forEach(row=>row.forEach(td=>{
@@ -264,17 +266,17 @@ algorithms.forEach(option=>{
 /**
  *    specify the speed
  */
-const speedBtns = document.querySelectorAll(`#speed ~ section > option`)
+const speedBtns = document.querySelectorAll(`#speed ~ ul > li`)
 
 speedBtns.forEach(btn=>{
 
     btn.addEventListener('click',(e)=>{
 
-    speed = e.target.value;
+    speed = e.target.getAttribute('data-value');
     
     // for UI
-    speedBtns.forEach(option=> option.selected=false)
-    e.target.selected = true;
+    speedBtns.forEach(option=> option.classList.remove('active'))
+    e.target.classList.add('active');
 
     
     switch(speed){
