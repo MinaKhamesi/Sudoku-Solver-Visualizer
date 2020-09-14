@@ -243,9 +243,9 @@ li > input[type='checkbox']:checked ~ section option:checked{
         background: red;
         box-shadow:1px 1px 10px rgb(7, 7, 7), -1px -1px 10px #705a5a;
         color:#fff;
-        border-radius:5px;
+        
         padding:0.5rem;
-        z-index:400;
+        z-index:40;
         margin:0.3rem;
     }
       
