@@ -236,6 +236,7 @@ li > input[type='checkbox']:checked ~ section option:checked{
         line-height: 3;
         border-bottom:1px dotted #d5c2a5c0;
         z-index:404;
+        display: block;
     }
 
     
