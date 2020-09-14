@@ -231,10 +231,11 @@ li > input[type='checkbox']:checked ~ section option:checked{
     }
     /*  emtehany result1: nav>ul>ul is working. something is wrong with options */
     li > input[type='checkbox']:checked ~ section option{
-        width:5rem;
+        width:10rem;
         height:3rem;
         line-height: 3;
         border-bottom:1px dotted #d5c2a5c0;
+        z-index:404;
     }
 
     
