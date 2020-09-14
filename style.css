@@ -229,26 +229,15 @@ li > input[type='checkbox']:checked ~ section option:checked{
     .alert{
         width: 90%;
     }
-    /*  emtehany  */
+    /*  emtehany result1: nav>ul>ul is working. something is wrong with options */
     li > input[type='checkbox']:checked ~ section option{
-        width:50%;
-        height:10%;
+        width:5rem;
+        height:3rem;
         line-height: 3;
         border-bottom:1px dotted #d5c2a5c0;
-        z-index: 40;
     }
 
-    li > input[type='checkbox']:checked ~ section{
-        display: block;
-        position:absolute;
-        background: red;
-        box-shadow:1px 1px 10px rgb(7, 7, 7), -1px -1px 10px #705a5a;
-        color:#fff;
-        border-radius: 0rem;
-        padding:10rem;
-        z-index:40;
-        margin:0.3rem;
-    }
+    
       
 }
 
