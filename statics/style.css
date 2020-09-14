@@ -229,6 +229,13 @@ li > input[type='checkbox']:checked ~ section option:checked{
     .alert{
         width: 90%;
     }
+
+    li > input[type='checkbox']:checked ~ section option{
+        width:50%;
+        height:10%;
+        line-height: 3;
+        border-bottom:1px dotted #d5c2a5c0;
+    }
       
 }
 
