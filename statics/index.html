@@ -14,30 +14,30 @@
         <h1 class="logo">Sudoku solver Visualizer</h1>
 
         <ul>
-            
+            <li id='clearBtn'>Clear puzzle</li>
             <li id='generateBtn'>Generate puzzle</li>
             
             <li>
                 <input type="checkbox" name="" id="algorithms">
                 <label for="algorithms">Algorithms<i class='fas fa-angle-down'></i></label>
-                <section>
-                    <option value='backtracking' label='Backtracking'>Backtracking</option>
-                     <option value='bfs' label='Best-First Search'>best-first search</option>
-                     <option value='algorithm-x' label='Algorithm X' selected>Algorithm-X</option>
-                </section>
+                <ul>
+                    <li data-value='backtracking' >Backtracking</li>
+                     <li data-value='bfs' >best-first search</li>
+                     <li data-value='algorithm-x' class='active'>Algorithm-X</li>
+                </ul>
             </li>
             <li>
                 <input type="checkbox" name="" id="speed">
                 <label for="speed" >Speed<i class='fas fa-angle-down'></i></label>
-                <section>
-                    <option value='Fast' selected>Fast</option>
-                     <option value='Average'>Average</option>
-                     <option value='Slow' >Slow</option>
-                     <option value='noAnimation' >No Animation</option>
-                </section>
+                <ul>
+                    <li data-value='Fast' class='active'>Fast</li>
+                     <li data-value='Average'>Average</li>
+                     <li data-value='Slow' >Slow</li>
+                     <li data-value='noAnimation' >No Animation</li>
+                </ul>
             </li>
            
-            <li id='clearBtn'>Clear puzzle</li>
+            
             <li  id='visualizeBtn'>VISUALIZE</li>
             
             
