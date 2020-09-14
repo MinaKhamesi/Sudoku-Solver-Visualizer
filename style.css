@@ -18,7 +18,7 @@ body{
     background-repeat: no-repeat; 
     background-size: cover;
     color:#693f26;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 nav{
@@ -32,6 +32,7 @@ nav{
     margin-bottom: 2rem;
     opacity:1;
 }
+
 nav .logo{
     font-family: 'Pacifico', cursive;
     font-size:2.2rem;
@@ -39,6 +40,7 @@ nav .logo{
     text-transform:capitalize;
     z-index:2;
 }
+
 nav > ul{
     display: flex;
     justify-content:space-around;
@@ -47,6 +49,7 @@ nav > ul{
     padding-right:5rem;
     z-index:500;
 }
+
 nav ul li{
     margin: 0.5rem;
     font-size:1.05rem;
@@ -93,26 +96,31 @@ li > input[type='checkbox']:checked ~ section{
     z-index:400;
     margin:0.3rem;
 }
+
 li > input[type='checkbox']:checked ~ section option{
     width:10rem;
     height:3rem;
     line-height: 3;
     border-bottom:1px dotted #d5c2a5c0;
 }
+
 li > input[type='checkbox']:checked ~ section option:hover{
     border-left:5px solid #d5c2a5c0;
     padding-left:0.6rem;
 }
+
 li > input[type='checkbox']:checked ~ section option:checked{
     border-left:5px solid #d5c2a5c0;
     padding-left:0.6rem;
     border-bottom-style: solid;
 }
+
 #visualizeBtn{
     font-weight: 600;
     margin-left: 2rem;
     font-size:1.3rem;
 }
+
 #visualizeBtn:hover{
     font-weight: 1000;
     font-size:1.33rem;
