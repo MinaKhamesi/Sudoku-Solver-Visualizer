@@ -238,6 +238,10 @@ li > input[type='checkbox']:checked ~ section option:checked{
         z-index:404;
         display: block;
     }
+    li > input[type='checkbox']:checked ~ section{
+        width: 10rem;
+        height:10rem;
+    }
 
     
       
