@@ -754,7 +754,7 @@ const solveWithDancingLinks = (level,origin,nodesToAnimate)=>{
 
         grid[puzzleRow][puzzleColumn].children[0].value = '';
 
-        animationList.push([puzzleRow, puzzleColumn,'',''])
+        nodesToAnimate.push([puzzleRow, puzzleColumn,'',''])
 
         nextInRow = row.left;
         while(nextInRow != row){
