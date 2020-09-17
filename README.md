@@ -14,5 +14,6 @@ This application visualizes how three different algorithms solve sudoku puzzles.
 ![](desktop.gif)
 
 ##### application demo on mobile 
-![](mobile.gif){:height="700px" width="400px"}
+
+<img src="mobile.gif" width="250" height="250"/>
 
