@@ -19,7 +19,7 @@ This application visualizes how three different algorithms solve sudoku puzzles.
 
 ## Algorithm X by Dancing Links
 
-I learnt the algorithm X during this project, since I found the learning resources for self taught enthuthiasts hard to find, I thought I share my experience.
+I learnt the algorithm X during this project, since I found the learning resources for self taught enthusiasts hard to find, I thought I share my experience.
 
 The "go to" resource for learning about Dancing Links is "Dancing Link" article by Donald E. Knuth.
 [https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf](https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf)
